@@ -3,14 +3,48 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout>
-	<main style="display: flex; gap: 24px; padding: 60px; font-family: sans-serif;">
-		<div style="flex: 1; background: #f4f1ec; padding: 40px; border-radius: 8px;">
+	<main class="flipper">
+		<div class="card card-a">
 			<h2>Recuadro uno</h2>
 			<p>Este es el primer bloque de prueba.</p>
 		</div>
-		<div style="flex: 1; background: #cfafa5; padding: 40px; border-radius: 8px;">
+		<div class="card card-b">
 			<h2>Recuadro dos</h2>
 			<p>Este es el segundo bloque de prueba.</p>
 		</div>
 	</main>
 </Layout>
+
+<style>
+	.flipper {
+		display: flex;
+		gap: 24px;
+		padding: 60px;
+		height: 420px;
+	}
+
+	.card {
+		flex: 1;
+		border-radius: 8px;
+		padding: 40px;
+		font-family: sans-serif;
+		overflow: hidden;
+		transition: flex 0.6s ease;
+	}
+
+	.card-a {
+		background: #f4f1ec;
+	}
+
+	.card-b {
+		background: #cfafa5;
+	}
+
+	.flipper:hover .card {
+		flex: 1;
+	}
+
+	.flipper:hover .card:hover {
+		flex: 2.5;
+	}
+</style>
