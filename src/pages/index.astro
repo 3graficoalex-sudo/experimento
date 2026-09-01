@@ -1,3 +1,4 @@
+```astro
 ---
 import Layout from '../layouts/Layout.astro';
 ---
@@ -33,6 +34,7 @@ import Layout from '../layouts/Layout.astro';
 						href="https://espacioevapenado.com/"
 						target="_blank"
 						rel="noopener noreferrer"
+						aria-label="Visitar espacioevapenado.com"
 					>
 						espacioevapenado.com
 					</a>
@@ -55,12 +57,22 @@ import Layout from '../layouts/Layout.astro';
 		}
 
 		card?.classList.toggle('is-flipped');
+
+		scene?.setAttribute(
+			'aria-pressed',
+			String(card?.classList.contains('is-flipped'))
+		);
 	});
 
 	scene?.addEventListener('keydown', (event) => {
 		if (event.key === 'Enter' || event.key === ' ') {
 			event.preventDefault();
 			card?.classList.toggle('is-flipped');
+
+			scene?.setAttribute(
+				'aria-pressed',
+				String(card?.classList.contains('is-flipped'))
+			);
 		}
 	});
 </script>
@@ -90,10 +102,12 @@ import Layout from '../layouts/Layout.astro';
 	}
 
 	.card-scene {
+		position: relative;
 		width: min(86vw, 560px);
 		aspect-ratio: 533 / 306;
 		cursor: pointer;
 		perspective: 1800px;
+		outline: none;
 	}
 
 	.card {
@@ -101,6 +115,7 @@ import Layout from '../layouts/Layout.astro';
 		width: 100%;
 		height: 100%;
 		transform-style: preserve-3d;
+		-webkit-transform-style: preserve-3d;
 		transition: transform 950ms cubic-bezier(0.18, 0.78, 0.18, 1);
 	}
 
@@ -114,6 +129,7 @@ import Layout from '../layouts/Layout.astro';
 		width: 100%;
 		height: 100%;
 		backface-visibility: hidden;
+		-webkit-backface-visibility: hidden;
 	}
 
 	.face img {
@@ -122,96 +138,121 @@ import Layout from '../layouts/Layout.astro';
 		height: 100%;
 		object-fit: fill;
 		user-select: none;
+		-webkit-user-drag: none;
 		pointer-events: none;
+	}
+
+	.front {
+		transform: rotateY(0deg);
 	}
 
 	.back {
 		transform: rotateY(180deg);
 	}
 
-	```css
-.website-link {
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	z-index: 3;
-
-	transform: translate(-50%, -50%);
-
-	padding: 7px 13px;
-
-	color: #29252a;
-	background: transparent;
-
-	border: 1px solid rgba(41, 37, 42, 0.75);
-	border-radius: 999px;
-
-	text-decoration: none;
-
-	font-family: Georgia, 'Times New Roman', serif;
-	font-size: clamp(10px, 1.8vw, 14px);
-	font-style: italic;
-	font-weight: 600;
-	letter-spacing: 0.01em;
-	white-space: nowrap;
-
-	/* Parpadeo suave */
-	animation: websiteBlink 2s ease-in-out infinite;
-
-	transition:
-		transform 0.25s ease,
-		border-color 0.25s ease,
-		box-shadow 0.25s ease;
-}
-
-/* Brillo al pasar el ratón */
-.website-link:hover,
-.website-link:focus-visible {
-	transform: translate(-50%, -50%) scale(1.06);
-
-	background: transparent;
-
-	border-color: #29252a;
-
-	box-shadow:
-		0 0 6px rgba(41, 37, 42, 0.25),
-		0 0 14px rgba(41, 37, 42, 0.15);
-
-	outline: none;
-}
-
-/* Parpadeo */
-@keyframes websiteBlink {
-	0%,
-	100% {
-		opacity: 0.55;
-		box-shadow: 0 0 0 rgba(41, 37, 42, 0);
-	}
-
-	50% {
-		opacity: 1;
-		box-shadow:
-			0 0 5px rgba(41, 37, 42, 0.22),
-			0 0 12px rgba(41, 37, 42, 0.12);
-	}
-}
-
-/* En móvil y personas que prefieren menos movimiento */
-@media (prefers-reduced-motion: reduce) {
+	/*
+	 * BOTÓN SOBRE "espacioevapenado.com"
+	 *
+	 * El enlace está colocado en el centro
+	 * del reverso de la tarjeta.
+	 */
 	.website-link {
-		animation: none;
+		position: absolute;
+
+		/* Posición del texto de la web */
+		left: 50%;
+		top: 50%;
+
+		z-index: 10;
+
+		transform: translate(-50%, -50%);
+
+		padding: 6px 12px;
+
+		color: #29252a;
+		background: transparent;
+
+		border: 1px solid rgba(41, 37, 42, 0.8);
+		border-radius: 999px;
+
+		text-decoration: none;
+
+		font-family: Georgia, 'Times New Roman', serif;
+		font-size: clamp(10px, 1.8vw, 14px);
+		font-style: italic;
+		font-weight: 600;
+		letter-spacing: 0.01em;
+		white-space: nowrap;
+
+		/*
+		 * Parpadeo suave.
+		 * No cambia el fondo: sigue siendo transparente.
+		 */
+		animation: websiteBlink 2.2s ease-in-out infinite;
+
+		transition:
+			transform 0.25s ease,
+			border-color 0.25s ease,
+			box-shadow 0.25s ease;
 	}
-}
-```
 
-
-	.website-link:hover {
+	.website-link:hover,
+	.website-link:focus-visible {
 		transform: translate(-50%, -50%) scale(1.06);
+
+		background: transparent;
+
+		border-color: #29252a;
+
+		box-shadow:
+			0 0 5px rgba(41, 37, 42, 0.3),
+			0 0 14px rgba(41, 37, 42, 0.16);
+
+		outline: none;
+	}
+
+	/*
+	 * PARPADEO
+	 */
+	@keyframes websiteBlink {
+		0%,
+		100% {
+			opacity: 0.45;
+			box-shadow:
+				0 0 0 rgba(41, 37, 42, 0);
+		}
+
+		50% {
+			opacity: 1;
+			box-shadow:
+				0 0 5px rgba(41, 37, 42, 0.25),
+				0 0 13px rgba(41, 37, 42, 0.12);
+		}
+	}
+
+	.card-scene:focus-visible {
+		outline: 2px solid #777;
+		outline-offset: 8px;
 	}
 
 	@media (max-width: 600px) {
 		.card-scene {
 			width: 92vw;
 		}
+
+		.website-link {
+			padding: 5px 10px;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.card {
+			transition: none;
+		}
+
+		.website-link {
+			animation: none;
+		}
 	}
 </style>
+```
