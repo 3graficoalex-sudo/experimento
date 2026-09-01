@@ -5,194 +5,177 @@ import Layout from '../layouts/Layout.astro';
 <Layout>
 	<main class="card-page">
 
-	<!-- BIENVENIDA -->
-	<section class="welcome">
-		<h1>Bienvenido a Eva Penado</h1>
-		<p>estudio de arquitectura e interiorismo</p>
-	</section>
+		<p class="hint">
+			Haz clic o toca la tarjeta para girarla
+		</p>
 
-	<p class="hint">Haz clic o toca la tarjeta para girarla</p>
+		<!-- CONTENEDOR DE LA TARJETA -->
+		<div
+			class="card-scene"
+			id="businessCard"
+			role="button"
+			tabindex="0"
+			aria-label="Tarjeta de visita de EVA PENADO. Pulsa para mostrar el reverso."
+			aria-pressed="false"
+		>
 
-	<div
-		class="card-scene"
-		id="businessCard"
-		role="button"
-		tabindex="0"
-		aria-label="Tarjeta de visita de EVA PENADO. Pulsa para mostrar el reverso."
-		aria-pressed="false"
-	>
-		<div class="card">
+			<span class="card">
 
-			<div class="face front">
-				<img
-					src="/assets/tarjeta-gris-frente.png"
-					alt="Tarjeta de EVA PENADO"
-				/>
-			</div>
+				<!-- ================================
+				     FRENTE DE LA TARJETA
+				     ================================= -->
 
-			<div class="face back">
-				<img
-					src="/assets/tarjeta-gris-reverso.png"
-					alt="Reverso de la tarjeta de EVA PENADO"
-				/>
+				<span class="face front">
+					<img
+						src="/assets/tarjeta-gris-frente.png"
+						alt="Tarjeta de EVA PENADO, the studio"
+					/>
+				</span>
 
-				<a
-					class="website-link"
-					href="https://espacioevapenado.com/"
-					target="_blank"
-					rel="noopener noreferrer"
-					aria-label="Visitar espacioevapenado.com"
-				>
-					espacioevapenado.com
-				</a>
-			</div>
+
+				<!-- ================================
+				     REVERSO DE LA TARJETA
+				     ================================= -->
+
+				<span class="face back">
+
+					<img
+						src="/assets/tarjeta-gris-reverso.png"
+						alt="Reverso de la tarjeta de EVA PENADO"
+					/>
+
+					<!-- ENLACE A LA WEB -->
+					<a
+						class="website-link"
+						href="https://espacioevapenado.com/"
+						target="_blank"
+						rel="noopener noreferrer"
+						aria-label="Visitar espacioevapenado.com"
+					>
+						espacioevapenado.com
+					</a>
+
+				</span>
+
+			</span>
 
 		</div>
-	</div>
 
 	</main>
 </Layout>
 
 <script>
 	const scene = document.querySelector('#businessCard');
-	const card = document.querySelector('.card');
+	const card = scene?.querySelector('.card');
 
-	function flipCard() {
-		if (!card || !scene) return;
+	if (scene && card) {
 
-		card.classList.toggle('is-flipped');
+		/* =========================================
+		   FUNCIÓN PARA GIRAR LA TARJETA
+		   ========================================= */
 
-		scene.setAttribute(
-			'aria-pressed',
-			String(card.classList.contains('is-flipped'))
-		);
-	}
+		const flipCard = () => {
 
-	scene?.addEventListener('click', (event) => {
-		if (
-			event.target instanceof HTMLElement &&
-			event.target.closest('.website-link')
-		) {
-			return;
-		}
+			const flipped =
+				card.classList.toggle('is-flipped');
 
-		flipCard();
-	});
+			scene.setAttribute(
+				'aria-pressed',
+				String(flipped)
+			);
 
-	scene?.addEventListener('keydown', (event) => {
-		if (event.key === 'Enter' || event.key === ' ') {
-			event.preventDefault();
+			scene.setAttribute(
+				'aria-label',
+				flipped
+					? 'Tarjeta de visita de EVA PENADO. Pulsa para mostrar el frente.'
+					: 'Tarjeta de visita de EVA PENADO. Pulsa para mostrar el reverso.'
+			);
+		};
+
+
+		/* =========================================
+		   CLIC / TOQUE
+		   ========================================= */
+
+		scene.addEventListener('click', (event) => {
+
+			const target = event.target;
+
+			/*
+			 * Si se pulsa el enlace de la web,
+			 * NO giramos la tarjeta.
+			 */
+
+			if (
+				target instanceof HTMLElement &&
+				target.closest('.website-link')
+			) {
+				return;
+			}
+
 			flipCard();
-		}
-	});
+		});
+
+
+		/* =========================================
+		   TECLADO
+		   ========================================= */
+
+		scene.addEventListener('keydown', (event) => {
+
+			if (
+				event.key === 'Enter' ||
+				event.key === ' '
+			) {
+
+				event.preventDefault();
+
+				flipCard();
+			}
+		});
+
+	}
 </script>
 
 <style>
-	/* =========================
+
+	/* =========================================
 	   PÁGINA
-	   ========================= */
+	   ========================================= */
 
 	.card-page {
+
 		min-height: 100vh;
+
 		display: grid;
+
 		place-items: center;
+
 		align-content: center;
+
 		gap: 18px;
+
 		padding: 40px 20px;
 
-		background: radial-gradient(
-			circle at 50% 35%,
-			#ffffff 0%,
-			#f5f4f3 52%,
-			#ebe9e7 100%
-		);
-
-		overflow: hidden;
+		background:
+			radial-gradient(
+				circle at 50% 35%,
+				#ffffff 0%,
+				#f5f4f3 52%,
+				#ebe9e7 100%
+			);
 	}
 
 
-	/* =========================
-	   ANIMACIÓN DE BIENVENIDA
-	   ========================= */
-
-	.welcome {
-		text-align: center;
-		margin: 0 0 2px 0;
-
-		animation: welcomeFade 1.5s ease-out both;
-	}
-
-	.welcome h1 {
-		margin: 0;
-
-		color: #29252a;
-
-		font-family:
-			'Ivi Bodoni',
-			'Bodoni 72',
-			'Bodoni MT',
-			Didot,
-			serif;
-
-		font-size: clamp(30px, 6vw, 54px);
-		font-weight: 400;
-
-		letter-spacing: 0.015em;
-		line-height: 1.05;
-	}
-
-	.welcome p {
-		margin: 10px 0 0;
-
-		color: #777;
-
-		font-family:
-			'Ivi Bodoni',
-			'Bodoni 72',
-			'Bodoni MT',
-			Didot,
-			serif;
-
-		font-size: clamp(14px, 2.2vw, 19px);
-		font-style: italic;
-		letter-spacing: 0.04em;
-
-		animation: subtitleFade 1.7s ease-out 0.25s both;
-	}
-
-	@keyframes welcomeFade {
-		from {
-			opacity: 0;
-			transform: translateY(16px);
-		}
-
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
-	@keyframes subtitleFade {
-		from {
-			opacity: 0;
-			transform: translateY(8px);
-		}
-
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
-
-	/* =========================
+	/* =========================================
 	   TEXTO DE AYUDA
-	   ========================= */
+	   ========================================= */
 
 	.hint {
+
 		margin: 0;
 
-		color: #777;
+		color: #777777;
 
 		font-family:
 			Arial,
@@ -200,92 +183,135 @@ import Layout from '../layouts/Layout.astro';
 			sans-serif;
 
 		font-size: 12px;
+
 		letter-spacing: 0.05em;
-
-		animation: hintFade 1.5s ease-out 0.5s both;
-	}
-
-	@keyframes hintFade {
-		from {
-			opacity: 0;
-		}
-
-		to {
-			opacity: 1;
-		}
 	}
 
 
-	/* =========================
-	   ESCENA DE LA TARJETA
-	   ========================= */
+	/* =========================================
+	   CONTENEDOR 3D
+	   ========================================= */
 
 	.card-scene {
+
 		position: relative;
 
 		width: min(86vw, 560px);
+
 		aspect-ratio: 533 / 306;
+
+		padding: 0;
+
+		border: 0;
+
+		background: transparent;
 
 		cursor: pointer;
 
 		perspective: 1800px;
 
+		-webkit-tap-highlight-color: transparent;
+
 		outline: none;
+
+		/*
+		 * FIX: el filter (sombra de la tarjeta) vive aquí, en el
+		 * contenedor que NO gira — no en .card. Si se pone en
+		 * .card (que tiene transform-style: preserve-3d y gira),
+		 * Chrome/Safari dejan de respetar bien el
+		 * backface-visibility de sus hijos, y la cara frontal se
+		 * queda "fantasma" visible durante el flip.
+		 */
+		filter:
+			drop-shadow(
+				0 18px 22px
+				rgba(
+					35,
+					30,
+					35,
+					0.24
+				)
+			)
+			drop-shadow(
+				0 4px 6px
+				rgba(
+					35,
+					30,
+					35,
+					0.16
+				)
+			);
 	}
 
 
-	/* =========================
-	   SOMBRA / CUERPO
-	   ========================= */
+	/* =========================================
+	   SOMBRA DEBAJO DE LA TARJETA
+	   ========================================= */
 
 	.card-scene::after {
+
 		content: '';
 
 		position: absolute;
 
-		left: 5%;
-		right: 5%;
-		bottom: -12px;
+		left: 8%;
 
-		height: 22px;
+		right: 8%;
 
-		background: rgba(35, 30, 35, 0.16);
+		bottom: -13%;
+
+		height: 16%;
 
 		border-radius: 50%;
 
-		filter: blur(13px);
+		background:
+			rgba(
+				30,
+				25,
+				30,
+				0.25
+			);
 
-		z-index: -1;
+		filter: blur(20px);
 
-		opacity: 0.65;
+		transform:
+			translateZ(-20px);
 
-		transition:
-			opacity 0.3s ease,
-			transform 0.3s ease;
+		pointer-events: none;
 	}
 
-	.card-scene:hover::after {
-		opacity: 0.8;
-		transform: scale(0.96);
+
+	/* =========================================
+	   ACCESIBILIDAD CON TECLADO
+	   ========================================= */
+
+	.card-scene:focus-visible {
+
+		outline:
+			2px solid
+			#777777;
+
+		outline-offset: 9px;
 	}
 
 
-	/* =========================
-	   TARJETA 3D
-	   ========================= */
+	/* =========================================
+	   TARJETA
+	   ========================================= */
 
 	.card {
+
 		position: relative;
 
 		display: block;
 
 		width: 100%;
+
 		height: 100%;
 
 		transform-style: preserve-3d;
-		-webkit-transform-style: preserve-3d;
 
-		transform: rotateY(0deg);
+		-webkit-transform-style: preserve-3d;
 
 		transition:
 			transform 950ms cubic-bezier(
@@ -295,85 +321,131 @@ import Layout from '../layouts/Layout.astro';
 				1
 			);
 
-		filter:
-			drop-shadow(
-				0 18px 22px
-				rgba(35, 30, 35, 0.24)
-			)
-			drop-shadow(
-				0 4px 6px
-				rgba(35, 30, 35, 0.16)
-			);
+		/* ya no lleva filter aquí: se movió a .card-scene (ver arriba) */
 	}
+
+
+	/* =========================================
+	   TARJETA GIRADA
+	   ========================================= */
 
 	.card.is-flipped {
-		transform: rotateY(180deg);
+
+		transform:
+			rotateY(180deg);
 	}
 
 
-	/* =========================
+	/* =========================================
 	   CARAS
-	   ========================= */
+	   ========================================= */
 
 	.face {
+
 		position: absolute;
 
 		inset: 0;
 
-		width: 100%;
-		height: 100%;
-
-		backface-visibility: hidden;
-		-webkit-backface-visibility: hidden;
-
-		user-select: none;
-		-webkit-user-drag: none;
-	}
-
-	.face img {
 		display: block;
 
 		width: 100%;
+
+		height: 100%;
+
+		backface-visibility: hidden;
+
+		-webkit-backface-visibility: hidden;
+
+		user-select: none;
+
+		-webkit-user-drag: none;
+
+		border-radius: inherit;
+	}
+
+
+	/* =========================================
+	   IMÁGENES
+	   ========================================= */
+
+	.face img {
+
+		display: block;
+
+		width: 100%;
+
 		height: 100%;
 
 		object-fit: fill;
 
 		user-select: none;
+
 		-webkit-user-drag: none;
 
 		pointer-events: none;
 	}
 
+
+	/* =========================================
+	   FRENTE
+	   ========================================= */
+
 	.front {
-		transform: rotateY(0deg);
+
+		transform:
+			rotateY(0deg);
 	}
+
+
+	/* =========================================
+	   REVERSO
+	   ========================================= */
 
 	.back {
-		transform: rotateY(180deg);
+
+		transform:
+			rotateY(180deg);
 	}
 
 
-	/* =========================
-	   BOTÓN WEB
-	   ========================= */
+	/* =========================================
+	   ENLACE A LA WEB
+	   ========================================= */
 
 	.website-link {
+
 		position: absolute;
 
 		left: 50%;
+
 		top: 50%;
 
-		z-index: 10;
+		z-index: 3;
 
-		transform: translate(-50%, -50%);
+		transform:
+			translate(-50%, -50%);
 
-		padding: 6px 12px;
+		padding:
+			7px 13px;
 
 		color: #29252a;
 
-		background: transparent;
+		background:
+			rgba(
+				255,
+				255,
+				255,
+				0.78
+			);
 
-		border: 1px solid rgba(41, 37, 42, 0.8);
+		border:
+			1px solid
+			rgba(
+				50,
+				45,
+				50,
+				0.18
+			);
 
 		border-radius: 999px;
 
@@ -384,7 +456,12 @@ import Layout from '../layouts/Layout.astro';
 			'Times New Roman',
 			serif;
 
-		font-size: clamp(10px, 1.8vw, 14px);
+		font-size:
+			clamp(
+				10px,
+				1.8vw,
+				14px
+			);
 
 		font-style: italic;
 
@@ -394,107 +471,199 @@ import Layout from '../layouts/Layout.astro';
 
 		white-space: nowrap;
 
+		box-shadow:
+			0 5px 14px
+			rgba(
+				30,
+				25,
+				30,
+				0.12
+			);
+
 		animation:
-			websiteBlink
-			2.2s
+			websitePulse
+			2.6s
 			ease-in-out
 			infinite;
 
 		transition:
 			transform 0.25s ease,
-			border-color 0.25s ease,
-			box-shadow 0.25s ease;
+			box-shadow 0.25s ease,
+			background 0.25s ease;
+
+		pointer-events: auto;
 	}
+
+
+	/* =========================================
+	   BRILLO DEL ENLACE
+	   ========================================= */
+
+	.website-link::after {
+
+		content: '';
+
+		position: absolute;
+
+		inset: -2px;
+
+		border-radius: inherit;
+
+		background:
+			linear-gradient(
+				110deg,
+				transparent 30%,
+				rgba(
+					255,
+					255,
+					255,
+					0.95
+				) 48%,
+				transparent 66%
+			);
+
+		transform:
+			translateX(-130%);
+
+		animation:
+			websiteSweep
+			3.2s
+			ease-in-out
+			infinite;
+
+		pointer-events: none;
+	}
+
+
+	/* =========================================
+	   HOVER DEL ENLACE
+	   ========================================= */
 
 	.website-link:hover,
 	.website-link:focus-visible {
+
 		transform:
 			translate(-50%, -50%)
 			scale(1.06);
 
-		background: transparent;
-
-		border-color: #29252a;
+		background:
+			rgba(
+				255,
+				255,
+				255,
+				0.95
+			);
 
 		box-shadow:
-			0 0 5px rgba(41, 37, 42, 0.3),
-			0 0 14px rgba(41, 37, 42, 0.16);
+			0 8px 22px
+			rgba(
+				30,
+				25,
+				30,
+				0.24
+			);
 
 		outline: none;
 	}
 
 
-	/* =========================
-	   PARPADEO
-	   ========================= */
+	/* =========================================
+	   ANIMACIÓN DE PULSO
+	   ========================================= */
 
-	@keyframes websiteBlink {
+	@keyframes websitePulse {
+
 		0%,
 		100% {
-			opacity: 0.45;
 
 			box-shadow:
-				0 0 0 rgba(41, 37, 42, 0);
+				0 5px 14px
+				rgba(
+					30,
+					25,
+					30,
+					0.12
+				);
 		}
 
 		50% {
-			opacity: 1;
 
 			box-shadow:
-				0 0 5px rgba(41, 37, 42, 0.25),
-				0 0 13px rgba(41, 37, 42, 0.12);
+				0 7px 22px
+				rgba(
+					30,
+					25,
+					30,
+					0.25
+				);
 		}
 	}
 
 
-	/* =========================
-	   ACCESIBILIDAD
-	   ========================= */
+	/* =========================================
+	   ANIMACIÓN DE BRILLO
+	   ========================================= */
 
-	.card-scene:focus-visible {
-		outline: 2px solid #777;
-		outline-offset: 8px;
+	@keyframes websiteSweep {
+
+		0%,
+		35% {
+
+			transform:
+				translateX(-130%);
+		}
+
+		65%,
+		100% {
+
+			transform:
+				translateX(130%);
+		}
 	}
 
 
-	/* =========================
+	/* =========================================
 	   MÓVIL
-	   ========================= */
+	   ========================================= */
 
 	@media (max-width: 600px) {
 
-		.card-page {
-			padding: 28px 16px;
-		}
-
 		.card-scene {
+
 			width: 92vw;
 		}
 
+		.hint {
+
+			font-size: 11px;
+		}
+
 		.website-link {
-			padding: 5px 10px;
+
+			padding:
+				6px 10px;
 		}
 	}
 
 
-	/* =========================
-	   REDUCIR MOVIMIENTO
-	   ========================= */
+	/* =========================================
+	   REDUCIR ANIMACIONES
+	   ========================================= */
 
 	@media (prefers-reduced-motion: reduce) {
 
-		.welcome,
-		.welcome p,
-		.hint {
-			animation: none;
-		}
-
 		.card {
+
 			transition: none;
 		}
 
-		.website-link {
+		.website-link,
+		.website-link::after {
+
 			animation: none;
+
+			transition: none;
 		}
 	}
+
 </style>
